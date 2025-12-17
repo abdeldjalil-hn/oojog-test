@@ -2,6 +2,7 @@ package com.oojog.oojogtest.services;
 
 import com.oojog.oojogtest.dtos.CreateProductRequest;
 import com.oojog.oojogtest.dtos.ProductDto;
+import com.oojog.oojogtest.dtos.UpdateProductRequest;
 import com.oojog.oojogtest.entities.Category;
 import com.oojog.oojogtest.entities.Product;
 import com.oojog.oojogtest.repositories.CategoryRepository;
@@ -29,6 +30,41 @@ public class ProductService {
             Category category = categoryRepository.findById(createProductRequest.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found"));
             product.setCategory(category);
+        }
+
+        Product saved = productRepository.save(product);
+        return toDto(saved);
+    }
+
+    public ProductDto update(String id, UpdateProductRequest updateProductRequest) {
+        Product product = findByIdOrThrow(id);
+
+        if (updateProductRequest.getName() != null && !updateProductRequest.getName().isBlank()) {
+            product.setName(updateProductRequest.getName());
+        }
+
+        if (updateProductRequest.getDescription() != null && !updateProductRequest.getDescription().isBlank()) {
+            product.setDescription(updateProductRequest.getDescription());
+        }
+
+        if (updateProductRequest.getPrice() != null) {
+            product.setPrice(updateProductRequest.getPrice());
+        }
+
+        if (updateProductRequest.getQuantity() != null) {
+            product.setQuantityInStock(updateProductRequest.getQuantity());
+        }
+
+        if (updateProductRequest.getCategoryId() != null) {
+            if (updateProductRequest.getCategoryId().isBlank()) {
+                product.setCategory(null);
+            } else {
+                Category category = categoryRepository
+                        .findById(updateProductRequest.getCategoryId())
+                        .orElseThrow(() -> new RuntimeException("Category not found"));
+
+                product.setCategory(category);
+            }
         }
 
         Product saved = productRepository.save(product);
