@@ -4,6 +4,7 @@ import com.oojog.oojogtest.dtos.CategoryDto;
 import com.oojog.oojogtest.dtos.CreateCategoryRequest;
 import com.oojog.oojogtest.entities.Category;
 import com.oojog.oojogtest.repositories.CategoryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,27 @@ public class CategoryService {
                 new LinkedList<>() // new category no children by default
         );
 
+    }
+
+    public void delete(String id) {
+        Category category = findByIdOrThrow(id);
+
+        if (category.hasChildren()) {
+            throw new RuntimeException("Can not delete a category with children: " + id);
+        }
+
+        if (category.hasProducts()) {
+            throw new RuntimeException("Can not delete a category with products: " + id);
+        }
+
+        categoryRepository.delete(category);
+    }
+
+    public void forceDelete(String id) {
+        Category category = findByIdOrThrow(id);
+
+        // JPA cascade configuration will handle all children dependencies are deleted
+        categoryRepository.delete(category);
     }
 
 

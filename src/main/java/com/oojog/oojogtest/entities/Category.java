@@ -104,4 +104,12 @@ public class Category {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public boolean hasChildren() {
+        return !children.isEmpty();
+    }
+
+    public boolean hasProducts() {
+        return !products.isEmpty();
+    }
 }
