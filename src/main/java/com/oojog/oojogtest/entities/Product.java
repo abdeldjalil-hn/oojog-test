@@ -2,6 +2,7 @@ package com.oojog.oojogtest.entities;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,6 +21,12 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(name = "quantity_in_stock", nullable = false)
+    private Integer quantityInStock = 0;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
