@@ -1,6 +1,7 @@
 package com.oojog.oojogtest.services;
 
 import com.oojog.oojogtest.dtos.CreateProductRequest;
+import com.oojog.oojogtest.dtos.LinkProductToCategoryRequest;
 import com.oojog.oojogtest.dtos.ProductDto;
 import com.oojog.oojogtest.dtos.UpdateProductRequest;
 import com.oojog.oojogtest.entities.Category;
@@ -74,6 +75,18 @@ public class ProductService {
     public void delete(String id) {
         Product product = findByIdOrThrow(id);
         productRepository.delete(product);
+    }
+
+    public ProductDto linkProductToCategory(LinkProductToCategoryRequest linkProductToCategoryRequest) {
+        Product product = findByIdOrThrow(linkProductToCategoryRequest.getProductId());
+        Category category = categoryRepository
+                .findById(linkProductToCategoryRequest.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        product.setCategory(category);
+
+        Product saved = productRepository.save(product);
+        return toDto(saved);
     }
 
 
