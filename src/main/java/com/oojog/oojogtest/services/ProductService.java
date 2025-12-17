@@ -35,6 +35,11 @@ public class ProductService {
         return toDto(saved);
     }
 
+    public void delete(String id) {
+        Product product = findByIdOrThrow(id);
+        productRepository.delete(product);
+    }
+
 
     private ProductDto toDto(Product product) {
         return new ProductDto(
@@ -44,6 +49,12 @@ public class ProductService {
                 product.getPrice(),
                 product.getQuantityInStock()
         );
+    }
+
+    private Product findByIdOrThrow(String id) {
+        return productRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
 }
